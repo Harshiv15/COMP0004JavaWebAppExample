@@ -1,4 +1,4 @@
 <div class="links">
-  <p>The footer</p>
+  <p>Made by Harshiv P</p>
   <div class="clearBoth"></div>
 </div>

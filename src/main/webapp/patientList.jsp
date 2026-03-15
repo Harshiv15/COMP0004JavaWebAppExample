@@ -20,19 +20,23 @@
     }
   %>
   <ul>
-    <%
-      List<String> patients = (List<String>) request.getAttribute("patientNames");
-      if (patients != null)
-      {
-        for (String patient : patients)
-        {
-          String href = "dummypage.html";
-    %>
-    <li><a href="<%=href%>"><%=patient%></a>
-    </li>
-    <%  }
-      }
-    %>
+  <%
+  List<String> patients = (List<String>) request.getAttribute("patientNames");
+
+  if (patients != null)
+  {
+    for (int i = 0; i < patients.size(); i++)
+    {
+  %>
+      <li>
+        <a href="patientInfo?row=<%=i%>">
+          <%=patients.get(i)%>
+        </a>
+      </li>
+  <%
+    }
+  }
+  %>
   </ul>
 </div>
 <jsp:include page="/footer.jsp"/>
