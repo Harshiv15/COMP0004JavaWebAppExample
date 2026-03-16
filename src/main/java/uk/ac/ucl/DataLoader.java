@@ -7,13 +7,14 @@ import org.apache.commons.csv.CSVRecord;
 
 import java.io.*;
 import java.util.Iterator;
+import java.util.logging.Logger;
 import java.util.stream.IntStream;
 
 public class DataLoader {
-  public DataFrame readFile(String fileName) {
+  public DataFrame readFile(String filePath) {
     DataFrame df = new DataFrame();
 
-    try (CSVParser csvParser = new CSVParser(new FileReader(fileName), CSVFormat.DEFAULT)) {
+    try (CSVParser csvParser = new CSVParser(new FileReader(filePath), CSVFormat.DEFAULT)) {
       Iterator<CSVRecord> iter = csvParser.iterator();
       if(!iter.hasNext()) return df;
 
@@ -28,14 +29,14 @@ public class DataLoader {
       }
 
     } catch (IOException e) {
-      System.out.println("Error reading file: '" + fileName + "'");
+      Logger.getLogger(DataLoader.class.getName()).severe("Error reading CSV file: " + e.getMessage());
     }
 
     return df;
   }
 
-  public void writeFile(DataFrame df, String fileName) {
-    try (CSVPrinter printer = new CSVPrinter(new FileWriter(fileName), CSVFormat.DEFAULT)) {
+  public void writeFile(DataFrame df, String filePath) {
+    try (CSVPrinter printer = new CSVPrinter(new FileWriter(filePath), CSVFormat.DEFAULT)) {
       var columnNames = df.getColumnNames();
 
       String[] header = IntStream.range(0, columnNames.size())
@@ -51,14 +52,7 @@ public class DataLoader {
         printer.printRecord((Object[]) record);
       }
     } catch (IOException e) {
-      System.out.println("Error reading file: '" + fileName + "'");
+      Logger.getLogger(DataLoader.class.getName()).severe("Error writing to CSV file: " + e.getMessage());
     }
-  }
-
-  public static void main(String[] args) {
-    var dl = new DataLoader();
-    var df = dl.readFile("data/patients100.csv");
-    df.deleteRow(100);
-    dl.writeFile(df, "data/patients100-2.csv");
   }
 }

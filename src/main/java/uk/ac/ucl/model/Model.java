@@ -9,16 +9,19 @@ import uk.ac.ucl.DataFrame;
 import uk.ac.ucl.DataLoader;
 
 import static uk.ac.ucl.PatientHelpers.formatPatientInfo;
-import static uk.ac.ucl.PatientHelpers.truncateName;
 
 public class Model
 {
-  public DataFrame df;
+  private DataFrame df;
   private final DataLoader dl;
 
   public Model() {
     df = new DataFrame();
     dl = new DataLoader();
+  }
+
+  public DataFrame getDataFrame() {
+    return df;
   }
 
   public List<String> getPatientNames()
@@ -30,13 +33,14 @@ public class Model
         .collect(Collectors.toList());
   }
 
-  public void readFile(String fileName)
+  public void readFile(String filePath)
   {
-    df = dl.readFile(fileName);
+    df = dl.readFile(filePath);
   }
 
   public List<String> searchFor(String keyword)
   {
+    // quite an inefficient search but couldn't add indexing in time
     List<String> results = new ArrayList<>();
     for(int i = 0; i < df.getColumnCount(); i++) {
       for(int row = 0; row < df.getRowCount(); row++) {
@@ -46,5 +50,9 @@ public class Model
       }
     }
     return results;
+  }
+
+  public void writeToFile(String filePath) {
+    dl.writeFile(df, filePath);
   }
 }

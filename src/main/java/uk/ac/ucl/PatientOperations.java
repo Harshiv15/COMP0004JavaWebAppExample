@@ -1,12 +1,6 @@
 package uk.ac.ucl;
 
-import uk.ac.ucl.model.ModelFactory;
-
-import java.io.IOException;
-import java.lang.invoke.MethodHandles;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.Month;
 import java.time.MonthDay;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -15,11 +9,10 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static java.time.temporal.ChronoUnit.DAYS;
-import static java.time.temporal.ChronoUnit.MONTHS;
 import static uk.ac.ucl.PatientHelpers.formatPatientInfo;
 
 public class PatientOperations {
-  public static String oldestPatient(DataFrame df) {
+  public String oldestPatient(DataFrame df) {
     Column birthdates = df.getColumn("BIRTHDATE");
     Column deathdates = df.getColumn("DEATHDATE");
 
@@ -44,7 +37,7 @@ public class PatientOperations {
     return formatPatientInfo(df.getRow(oldestIndex));
   }
 
-  public static Map<String, Integer> patientsPerPlace(DataFrame df) {
+  public Map<String, Integer> patientsPerPlace(DataFrame df) {
     HashMap<String, Integer> map = new HashMap<>();
     Column cities = df.getColumn("CITY");
 
@@ -56,7 +49,7 @@ public class PatientOperations {
     return map;
   }
 
-  public static Map<String, Integer> patientsWithSameBirthday(DataFrame df) {
+  public Map<String, Integer> patientsWithSameBirthday(DataFrame df) {
     Column birthdates = df.getColumn("BIRTHDATE");
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d");
@@ -68,17 +61,5 @@ public class PatientOperations {
 
     map.entrySet().removeIf(e -> e.getValue() == 1);
     return map;
-  }
-
-  public static void main(String... args) {
-    DataFrame df;
-    try {
-      df = ModelFactory.getModel().df;
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-    System.out.println("Oldest patient: " + PatientOperations.oldestPatient(df));
-    System.out.println("Patients per city: " + PatientOperations.patientsPerPlace(df));
-    System.out.println("Number of patients born on the same day: " + PatientOperations.patientsWithSameBirthday(df));
   }
 }
